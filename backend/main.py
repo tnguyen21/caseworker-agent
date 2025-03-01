@@ -1,12 +1,19 @@
 # main.py
 from fastapi import FastAPI, Request
-from fastapi.responses import StreamingResponse
+from fastapi.responses import StreamingResponse, JSONResponse
 from llama_setup import build_index
 
 app = FastAPI()
 
 # Build or load your index (e.g., globally or in a startup event)
 index = build_index()
+
+@app.get("/health")
+async def health_check():
+    """
+    Health check endpoint for Fly.io
+    """
+    return JSONResponse({"status": "ok"})
 
 @app.get("/chat-stream")
 async def chat_stream(query: str):

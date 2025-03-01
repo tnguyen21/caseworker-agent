@@ -1,14 +1,14 @@
 # Use a Node.js base image for the Next.js app
 FROM node:18-alpine as frontend
 
-WORKDIR /frontend
-COPY package.json package-lock.json ./
+WORKDIR /app/frontend
+COPY frontend/package.json frontend/package-lock.json ./
 RUN npm ci
 
-# Copy the Next.js application code
-COPY . .
+# Copy the frontend application code
+COPY frontend/ ./
 
-# Build the Next.js application
+# Build the frontend application
 RUN npm run build
 
 # Use a Python base image for the backend
@@ -24,15 +24,15 @@ RUN apt-get update && apt-get install -y \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
-# Copy Next.js app from the frontend stage
-COPY --from=frontend /frontend /frontend
+# Copy frontend from the frontend stage
+COPY --from=frontend /app/frontend /app/frontend
 
 # Install Python dependencies
-COPY requirements.txt /requirements.txt
-RUN pip install --no-cache-dir -r /requirements.txt
+COPY requirements.txt /app/requirements.txt
+RUN pip install --no-cache-dir -r /app/requirements.txt
 
 # Copy the Python backend code
-COPY backend/ /backend/
+COPY backend/ /app/backend/
 
 # Install supervisord to manage multiple processes
 RUN apt-get update && apt-get install -y supervisor && apt-get clean
@@ -40,8 +40,17 @@ RUN apt-get update && apt-get install -y supervisor && apt-get clean
 # Configure supervisord
 COPY supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 
-# Expose ports for Next.js and Python backend
+# Create a health check endpoint
+RUN mkdir -p /app/frontend/public/api
+RUN echo '{"status":"ok"}' > /app/frontend/public/api/health
+
+# Expose ports for frontend and Python backend
 EXPOSE 3000 8000
+
+# Set environment variables
+ENV PORT=3000
+ENV PYTHON_BACKEND_PORT=8000
+ENV NODE_ENV=production
 
 # Start supervisord
 CMD ["/usr/bin/supervisord", "-c", "/etc/supervisor/conf.d/supervisord.conf"]
