@@ -1,4 +1,11 @@
 # llama_setup.py
-from llama_index.py import build_index
+# Simple placeholder for llama-index functionality
 
-# This file is a wrapper to maintain compatibility with the import in main.py
+def build_index():
+    """
+    Placeholder function to build or load an index.
+    In a real application, this would initialize and return a LlamaIndex instance.
+    """
+    print("Building index...")
+    # Return a simple placeholder object that can be used in main.py
+    return {"status": "initialized"}

@@ -1,12 +1,20 @@
 # main.py
 from fastapi import FastAPI, Request
-from fastapi.responses import StreamingResponse
+from fastapi.responses import StreamingResponse, JSONResponse
 from llama_setup import build_index
+import os
 
 app = FastAPI()
 
 # Build or load your index (e.g., globally or in a startup event)
 index = build_index()
+
+@app.get("/health")
+async def health_check():
+    """
+    Health check endpoint for Fly.io
+    """
+    return JSONResponse({"status": "ok"})
 
 @app.get("/chat-stream")
 async def chat_stream(query: str):
@@ -15,20 +23,14 @@ async def chat_stream(query: str):
     The front-end can subscribe to this endpoint to get partial updates.
     """
     async def response_generator(query: str):
-        # Create a LlamaIndex query engine with streaming turned on if supported.
-        # Or yield partial tokens from your LLM's streaming function.
-        # The specifics of streaming depends on the underlying LLM's API.
-        
-        # This pseudocode assumes some 'stream_query' interface:
-        # for token in index.query(query, stream=True):
-        #     yield token
-        
-        # The actual method can differ depending on the LlamaIndex version
-        # and the underlying LLM. For demonstration, let's simulate chunked output:
-        
-        response_chunks = ["Hello, ", "this ", "is ", "a ", "streamed ", "LLM ", "response!"]
+        # Simplified response generator for demonstration
+        response_chunks = ["Hello, ", "this ", "is ", "a ", "streamed ", "response!"]
         for chunk in response_chunks:
             yield chunk
-            # An async sleep or real-time token generation might happen here.
 
     return StreamingResponse(response_generator(query), media_type="text/plain")
+
+if __name__ == "__main__":
+    import uvicorn
+    port = int(os.environ.get("PYTHON_BACKEND_PORT", 8000))
+    uvicorn.run(app, host="0.0.0.0", port=port)
