@@ -28,8 +28,8 @@ RUN apt-get update && apt-get install -y \
 COPY --from=frontend /frontend /frontend
 
 # Install Python dependencies
-COPY requirements.txt .
-RUN pip install --no-cache-dir -r requirements.txt
+COPY requirements.txt /requirements.txt
+RUN pip install --no-cache-dir -r /requirements.txt
 
 # Copy the Python backend code
 COPY backend/ /backend/
