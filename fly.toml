@@ -1,33 +1,45 @@
-# fly.toml app configuration file generated for caseworker-agent on 2025-03-01T16:25:24-05:00
-#
-# See https://fly.io/docs/reference/configuration/ for information about how to use this file.
-#
-
-app = 'caseworker-agent'
-primary_region = 'iad'
+app = "caseworker-agent"
+primary_region = "iad"
 
 [build]
-  dockerfile = 'Dockerfile'
+  dockerfile = "Dockerfile"
 
 [env]
-  NODE_ENV = 'production'
-  PORT = '3000'
-  PYTHON_BACKEND_PORT = '8000'
+  PORT = "3000"
+  PYTHON_BACKEND_PORT = "8000"
+  NODE_ENV = "production"
 
 [http_service]
-  internal_port = 3000
+  internal_port = 3000  # Next.js port
   force_https = true
-  auto_stop_machines = 'stop'
+  auto_stop_machines = true
   auto_start_machines = true
   min_machines_running = 1
-  processes = ['app']
+  processes = ["app"]
+
+  [[http_service.ports]]
+    port = 80
+    handlers = ["http"]
+    force_https = true
+
+  [[http_service.ports]]
+    port = 443
+    handlers = ["tls", "http"]
 
   [http_service.concurrency]
-    type = 'connections'
+    type = "connections"
     hard_limit = 100
     soft_limit = 80
 
-[[vm]]
-  memory = '1gb'
-  cpu_kind = 'shared'
+  [[http_service.http_checks]]
+    interval = "10s"
+    grace_period = "5s"
+    method = "get"
+    path = "/api/health"
+    protocol = "http"
+    timeout = "2s"
+
+[vm]
+  memory = "1gb"
+  cpu_kind = "shared"
   cpus = 1
