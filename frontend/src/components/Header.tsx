@@ -16,7 +16,7 @@ const Header = ({ className }: HeaderProps) => {
         <div className="w-8 h-8 rounded-full bg-gradient-to-tr from-blue-500 to-indigo-500 flex items-center justify-center">
           <span className="text-white font-medium text-sm">AI</span>
         </div>
-        <h1 className="text-lg font-medium">Chat Assistant</h1>
+        <h1 className="text-lg font-medium">Housing Hub Assistant</h1>
       </div>
       
       <div className="flex items-center space-x-3">
