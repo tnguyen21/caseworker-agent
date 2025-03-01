@@ -1,7 +1,6 @@
-
 import { cn } from "@/lib/utils";
 import { useState, useRef, useEffect } from "react";
-import { Send } from "lucide-react";
+import { Send, X } from "lucide-react";
 
 interface ChatInputProps {
   onSendMessage: (message: string) => void;
@@ -9,8 +8,18 @@ interface ChatInputProps {
   className?: string;
 }
 
+// Sample prompts that users can click on
+const samplePrompts = [
+  "What services are available for my client?",
+  "How do I file an emergency housing request?",
+  "What documents are needed for SNAP benefits?",
+  "When is the next community outreach event?",
+  "How can I check the status of a case?"
+];
+
 const ChatInput = ({ onSendMessage, isProcessing, className }: ChatInputProps) => {
   const [message, setMessage] = useState("");
+  const [showPrompts, setShowPrompts] = useState(true);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
@@ -24,6 +33,15 @@ const ChatInput = ({ onSendMessage, isProcessing, className }: ChatInputProps) =
     if (message.trim() && !isProcessing) {
       onSendMessage(message.trim());
       setMessage("");
+      setShowPrompts(false);
+    }
+  };
+
+  const handlePromptClick = (prompt: string) => {
+    setMessage(prompt);
+    setShowPrompts(false);
+    if (textareaRef.current) {
+      textareaRef.current.focus();
     }
   };
 
@@ -42,6 +60,25 @@ const ChatInput = ({ onSendMessage, isProcessing, className }: ChatInputProps) =
       className
     )}>
       <div className="max-w-3xl mx-auto relative">
+        {showPrompts && (
+          <div className="flex flex-wrap gap-2 mb-3 relative">
+            <button 
+              onClick={() => setShowPrompts(false)}
+              className="absolute -top-2 -right-2 bg-background/80 rounded-full p-1 hover:bg-muted/80 transition-colors"
+            >
+              <X size={14} />
+            </button>
+            {samplePrompts.map((prompt, index) => (
+              <button
+                key={index}
+                onClick={() => handlePromptClick(prompt)}
+                className="px-3 py-1.5 rounded-full text-sm bg-primary/10 hover:bg-primary/20 text-primary transition-colors"
+              >
+                {prompt}
+              </button>
+            ))}
+          </div>
+        )}
         <textarea
           ref={textareaRef}
           value={message}
