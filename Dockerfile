@@ -27,18 +27,11 @@ RUN apt-get update && apt-get install -y \
 # Copy frontend from the frontend stage
 COPY --from=frontend /app/frontend /app/frontend
 
-# Install Python dependencies
-COPY requirements.txt /app/requirements.txt
-RUN pip install --no-cache-dir -r /app/requirements.txt
+# Install Python dependencies - install minimal dependencies first
+RUN pip install --no-cache-dir fastapi uvicorn
 
 # Copy the Python backend code
 COPY backend/ /app/backend/
-
-# Install supervisord to manage multiple processes
-RUN apt-get update && apt-get install -y supervisor && apt-get clean
-
-# Configure supervisord
-COPY supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 
 # Create a health check endpoint
 RUN mkdir -p /app/frontend/public/api
@@ -51,6 +44,10 @@ EXPOSE 3000 8000
 ENV PORT=3000
 ENV PYTHON_BACKEND_PORT=8000
 ENV NODE_ENV=production
+
+# Start supervisord
+COPY supervisord.conf /etc/supervisor/conf.d/supervisord.conf
+RUN apt-get update && apt-get install -y supervisor && apt-get clean
 
 # Start supervisord
 CMD ["/usr/bin/supervisord", "-c", "/etc/supervisor/conf.d/supervisord.conf"]
