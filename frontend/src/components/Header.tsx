@@ -1,5 +1,5 @@
-
 import { cn } from "@/lib/utils";
+import { Link } from "react-router-dom";
 
 interface HeaderProps {
   className?: string;
@@ -19,9 +19,14 @@ const Header = ({ className }: HeaderProps) => {
         <h1 className="text-lg font-medium">Chat Assistant</h1>
       </div>
       
-      <button className="text-sm px-3 py-1.5 rounded-md bg-secondary hover:bg-secondary/80 transition-colors">
-        New Chat
-      </button>
+      <div className="flex items-center space-x-3">
+        <Link to="/faq" className="text-sm px-3 py-1.5 rounded-md hover:bg-secondary/50 transition-colors">
+          FAQ
+        </Link>
+        <button className="text-sm px-3 py-1.5 rounded-md bg-secondary hover:bg-secondary/80 transition-colors">
+          New Chat
+        </button>
+      </div>
     </header>
   );
 };
