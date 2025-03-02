@@ -3,3 +3,4 @@
 ## Contributors 
 - Tommy Nguyen
 - Andrew Rogers
+- Shriya Rawal
