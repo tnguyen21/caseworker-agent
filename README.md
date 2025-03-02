@@ -1,4 +1,5 @@
 # Caseworker Agent
 
-# Contributors: 
-# Andrew Rogers
+## Contributors 
+- Tommy Nguyen
+- Andrew Rogers
