@@ -7,16 +7,13 @@ from typing import List
 import os
 import logging
 import yaml
-from llama_index.core import VectorStoreIndex, SimpleDirectoryReader, get_response_synthesizer
-from llama_index.core.retrievers import VectorIndexRetriever
-from llama_index.core.query_engine import RetrieverQueryEngine
-from llama_index.core.chat_engine import CondenseQuestionChatEngine
+
 # Set up logging
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 logger = logging.getLogger(__name__)
 
 # Load system prompt
-with open('../prompts/section8_agent.yaml', 'r') as f:
+with open('/app/prompts/section8_agent.yaml', 'r') as f:
     prompt_config = yaml.safe_load(f)
     SYSTEM_PROMPT = prompt_config['system_prompt']
 
@@ -49,28 +46,6 @@ llm = Gemini(
     # api_key="" # uses GOOGLE_API_KEY env var by default
 )
 
-
-# build index
-documents = SimpleDirectoryReader(
-    "../Section8-Resources"
-).load_data()
-index = VectorStoreIndex.from_documents(documents)
-
-# configure retriever
-retriever = VectorIndexRetriever(
-    index=index,
-    similarity_top_k=5,
-)
-
-query_engine = index.as_query_engine()
-
-
-chat_engine = CondenseQuestionChatEngine.from_defaults(
-    query_engine=query_engine,
-    condense_question_prompt=SYSTEM_PROMPT,
-    verbose=True,
-)
-
 @app.post("/chat-stream")
 async def chat_stream(request: Request):
     """
@@ -92,17 +67,16 @@ async def chat_stream(request: Request):
 
         async def response_generator(messages: List[ChatMessage]):
             try:
-                # Extract the last user message as the query string
-                query_str = messages[-1].content if messages and messages[-1].role == "user" else ""
-                
-                # Use the query string instead of passing the messages directly
-                streaming_response = chat_engine.stream_chat(query_str)
-                
-                # Access the response_gen attribute for the actual generator
-                # Use a regular for loop since it's not an async generator
-                for token in streaming_response.response_gen:
-                    logger.debug(f"Streaming token: {token[:50] if token else ''}...")
-                    yield token
+                response = llm.stream_chat(messages)
+                for chunk in response:
+                    if hasattr(chunk, 'delta'):
+                        logger.debug(f"Streaming chunk delta: {chunk.delta[:50]}...")
+                        yield chunk.delta
+                    elif hasattr(chunk, 'message'):
+                        logger.debug(f"Streaming chunk message: {chunk.message.content[:50]}...")
+                        yield chunk.message.content
+                    else:
+                        logger.debug(f"Unknown chunk type: {type(chunk)}, attributes: {dir(chunk)}")
             except Exception as e:
                 logger.error(f"Error in stream_chat: {str(e)}", exc_info=True)
                 raise
