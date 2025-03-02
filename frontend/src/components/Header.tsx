@@ -21,7 +21,7 @@ const Header = ({ className }: HeaderProps) => {
       
       <div className="flex items-center space-x-3">
         <Link to="/faq" className="text-sm px-3 py-1.5 rounded-md hover:bg-secondary/50 transition-colors">
-          FAQ
+          About
         </Link>
       </div>
     </header>
