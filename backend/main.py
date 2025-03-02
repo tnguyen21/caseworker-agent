@@ -41,7 +41,8 @@ app.add_middleware(
 )
 
 llm = Gemini(
-    model="models/gemini-2.0-flash",
+    model="models/gemini-2.0-flash-thinking-exp-01-21",
+    temperature=0.0,
     # api_key="" # uses GOOGLE_API_KEY env var by default
 )
 
