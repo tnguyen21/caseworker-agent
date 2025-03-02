@@ -1,6 +1,5 @@
 from fastapi import FastAPI, Request
 from fastapi.responses import StreamingResponse, JSONResponse
-# from llama_setup import build_index
 from llama_index.llms.gemini import Gemini
 from llama_index.core.llms import ChatMessage
 from fastapi.middleware.cors import CORSMiddleware
