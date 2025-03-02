@@ -5,7 +5,9 @@ import ChatInput from "@/components/ChatInput";
 import { toast } from "@/components/ui/use-toast";
 
 // API configuration
-const API_BASE_URL = "https://caseworker-agent.fly.dev";
+// Use a relative URL for the API endpoint
+// This will be proxied in development and handled directly in production
+const API_ENDPOINT = "/chat-stream";
 
 interface Message {
   id: string;
@@ -38,7 +40,7 @@ const Index = () => {
     }]);
 
     try {
-      const response = await fetch(`${API_BASE_URL}/chat-stream`, {
+      const response = await fetch(`${API_ENDPOINT}`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

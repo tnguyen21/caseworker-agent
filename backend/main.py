@@ -34,7 +34,7 @@ async def log_requests(request: Request, call_next):
 # Simplified CORS setup
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
+    allow_origins=["*", "http://localhost:8080"],  # Allow all origins + explicitly add Vite dev server
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
