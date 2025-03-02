@@ -27,11 +27,17 @@ RUN apt-get update && apt-get install -y \
 # Copy frontend from the frontend stage
 COPY --from=frontend /app/frontend /app/frontend
 
-# Install Python dependencies - install minimal dependencies first
-RUN pip install --no-cache-dir fastapi uvicorn
+# Copy requirements.txt first for better caching
+COPY requirements.txt .
+
+# Install all Python dependencies from requirements.txt
+RUN pip install --no-cache-dir -r requirements.txt
 
 # Copy the Python backend code
 COPY backend/ /app/backend/
+
+# Copy prompts directory if it exists
+COPY prompts/ /app/prompts/
 
 # Create a health check endpoint
 RUN mkdir -p /app/frontend/public/api
