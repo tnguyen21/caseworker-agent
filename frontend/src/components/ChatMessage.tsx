@@ -1,6 +1,6 @@
-
 import { cn } from "@/lib/utils";
 import { useEffect, useRef } from "react";
+import ReactMarkdown from "react-markdown";
 
 export type MessageRole = "user" | "assistant" | "thinking";
 
@@ -62,9 +62,9 @@ const ChatMessage = ({ role, content, isNew = false }: ChatMessageProps) => {
         </span>
       </div>
       <div className="ml-4 flex-1">
-        <p className="text-foreground/90 leading-relaxed text-balance whitespace-pre-wrap">
-          {content}
-        </p>
+        <div className="markdown-container">
+          <ReactMarkdown>{content}</ReactMarkdown>
+        </div>
       </div>
     </div>
   );
