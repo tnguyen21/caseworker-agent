@@ -90,17 +90,16 @@ const FAQ = () => {
                 </div>
                 
                 <div>
-                  <h3 className="text-lg font-medium text-primary">Can I use this with clients present?</h3>
+                  <h3 className="text-lg font-medium text-primary">Can Housing Hub Assistant replace a real caseworker?</h3>
                   <p className="mt-1 text-muted-foreground">
-                    Yes, the Housing Hub Assistant is designed to be used during client interactions. However, 
-                    remember that you are responsible for verifying the information provided before 
-                    sharing it with clients.
+                    No, the Housing Hub Assistant is designed to be be used as support for informational purposes. However, 
+                    it can not replace the function of a human caseworker.
                   </p>
                 </div>
               </div>
             </section>
             
-            {/* Client Services */}
+            {/* Services */}
             <section className="space-y-4">
               <h2 className="text-2xl font-semibold border-b pb-2">Information for Services</h2>
               
@@ -149,7 +148,7 @@ const FAQ = () => {
                   <h3 className="text-lg font-medium text-primary">Is my conversation data saved?</h3>
                   <p className="mt-1 text-muted-foreground">
                     Conversations are not permanently stored after your session ends. However, 
-                    avoid entering sensitive personal information about clients, such as full names, 
+                    avoid entering sensitive personal information, such as full names, 
                     Social Security numbers, or other identifiers.
                   </p>
                 </div>
