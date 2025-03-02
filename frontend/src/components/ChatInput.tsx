@@ -10,10 +10,8 @@ interface ChatInputProps {
 
 // Sample prompts that users can click on
 const samplePrompts = [
-  "What services are available for my client?",
   "How do I file an emergency housing request?",
   "What documents are needed for SNAP benefits?",
-  "When is the next community outreach event?",
   "How can I check the status of a case?"
 ];
 
