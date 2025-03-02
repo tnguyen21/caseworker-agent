@@ -1,16 +1,22 @@
 from fastapi import FastAPI, Request
 from fastapi.responses import StreamingResponse, JSONResponse
-from llama_setup import build_index
+# from llama_setup import build_index
 from llama_index.llms.gemini import Gemini
 from llama_index.core.llms import ChatMessage
 from fastapi.middleware.cors import CORSMiddleware
 from typing import List
 import os
 import logging
+import yaml
 
 # Set up logging
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 logger = logging.getLogger(__name__)
+
+# Load system prompt
+with open('prompts/section8_agent.yaml', 'r') as f:
+    prompt_config = yaml.safe_load(f)
+    SYSTEM_PROMPT = prompt_config['system_prompt']
 
 app = FastAPI()
 
@@ -52,9 +58,10 @@ async def chat_stream(request: Request):
         raw_messages = body.get("messages", [])
         logger.debug(f"Received raw messages: {raw_messages}")
 
-        # Convert messages to ChatMessage objects
+        # Convert messages to ChatMessage objects, including system prompt
         chat_messages = [
-            ChatMessage(role="user", content=msg) for msg in raw_messages
+            ChatMessage(role="system", content=SYSTEM_PROMPT),
+            *[ChatMessage(role="user", content=msg) for msg in raw_messages]
         ]
         logger.debug(f"Converted to chat messages: {chat_messages}")
 
