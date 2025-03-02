@@ -23,9 +23,6 @@ const Header = ({ className }: HeaderProps) => {
         <Link to="/faq" className="text-sm px-3 py-1.5 rounded-md hover:bg-secondary/50 transition-colors">
           FAQ
         </Link>
-        <button className="text-sm px-3 py-1.5 rounded-md bg-secondary hover:bg-secondary/80 transition-colors">
-          New Chat
-        </button>
       </div>
     </header>
   );
