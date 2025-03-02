@@ -1,34 +1,93 @@
-# main.py
 from fastapi import FastAPI, Request
 from fastapi.responses import StreamingResponse, JSONResponse
 from llama_setup import build_index
+from llama_index.llms.gemini import Gemini
+from llama_index.core.llms import ChatMessage
+from fastapi.middleware.cors import CORSMiddleware
+from typing import List
 import os
+import logging
+
+# Set up logging
+logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
+logger = logging.getLogger(__name__)
 
 app = FastAPI()
 
-# Build or load your index (e.g., globally or in a startup event)
-index = build_index()
+# Add request logging middleware
+@app.middleware("http")
+async def log_requests(request: Request, call_next):
+    logger.debug(f"Incoming {request.method} request to {request.url.path}")
+    try:
+        response = await call_next(request)
+        logger.debug(f"Response status: {response.status_code}")
+        return response
+    except Exception as e:
+        logger.error(f"Error processing request: {str(e)}", exc_info=True)
+        raise
+
+# Simplified CORS setup
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
+llm = Gemini(
+    model="models/gemini-1.5-flash",
+    # api_key="" # uses GOOGLE_API_KEY env var by default
+)
+
+@app.post("/chat-stream")
+async def chat_stream(request: Request):
+    """
+    Streams the response from LlamaIndex token-by-token.
+    """
+    logger.debug("Received request to /chat-stream")
+    try:
+        # Get raw request body
+        body = await request.json()
+        raw_messages = body.get("messages", [])
+        logger.debug(f"Received raw messages: {raw_messages}")
+
+        # Convert messages to ChatMessage objects
+        chat_messages = [
+            ChatMessage(role="user", content=msg) for msg in raw_messages
+        ]
+        logger.debug(f"Converted to chat messages: {chat_messages}")
+
+        async def response_generator(messages: List[ChatMessage]):
+            try:
+                response = llm.stream_chat(messages)
+                for chunk in response:
+                    if hasattr(chunk, 'delta'):
+                        logger.debug(f"Streaming chunk delta: {chunk.delta[:50]}...")
+                        yield chunk.delta
+                    elif hasattr(chunk, 'message'):
+                        logger.debug(f"Streaming chunk message: {chunk.message.content[:50]}...")
+                        yield chunk.message.content
+                    else:
+                        logger.debug(f"Unknown chunk type: {type(chunk)}, attributes: {dir(chunk)}")
+            except Exception as e:
+                logger.error(f"Error in stream_chat: {str(e)}", exc_info=True)
+                raise
+
+        return StreamingResponse(
+            response_generator(chat_messages),
+            media_type="text/plain"
+        )
+    except Exception as e:
+        logger.error(f"Error processing request: {str(e)}", exc_info=True)
+        return JSONResponse(
+            status_code=400,
+            content={"error": str(e)}
+        )
 
 @app.get("/health")
 async def health_check():
-    """
-    Health check endpoint for Fly.io
-    """
     return JSONResponse({"status": "ok"})
-
-@app.get("/chat-stream")
-async def chat_stream(query: str):
-    """
-    Streams the response from LlamaIndex token-by-token (or chunk-by-chunk).
-    The front-end can subscribe to this endpoint to get partial updates.
-    """
-    async def response_generator(query: str):
-        # Simplified response generator for demonstration
-        response_chunks = ["Hello, ", "this ", "is ", "a ", "streamed ", "response!"]
-        for chunk in response_chunks:
-            yield chunk
-
-    return StreamingResponse(response_generator(query), media_type="text/plain")
 
 if __name__ == "__main__":
     import uvicorn
