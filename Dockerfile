@@ -39,8 +39,6 @@ COPY backend/ /app/backend/
 # Copy prompts directory if it exists
 COPY prompts/ /app/prompts/
 
-COPY Section8-Resources/ /app/Section8-Resources/
-
 # Create a health check endpoint
 RUN mkdir -p /app/frontend/public/api
 RUN echo '{"status":"ok"}' > /app/frontend/public/api/health
