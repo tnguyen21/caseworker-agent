@@ -18,7 +18,7 @@ const Index = () => {
     {
       id: generateId(),
       role: "assistant",
-      content: "Hello! I'm your AI assistant. How can I help you today?"
+      content: "Hello! I'm your AI caseworker. How can I help you today?"
     }
   ]);
   const [isProcessing, setIsProcessing] = useState(false);
