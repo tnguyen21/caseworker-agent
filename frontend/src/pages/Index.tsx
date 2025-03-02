@@ -4,6 +4,9 @@ import ChatMessage, { MessageRole } from "@/components/ChatMessage";
 import ChatInput from "@/components/ChatInput";
 import { toast } from "@/components/ui/use-toast";
 
+// API configuration
+const API_BASE_URL = "https://caseworker-agent.fly.dev";
+
 interface Message {
   id: string;
   role: MessageRole;
@@ -35,7 +38,7 @@ const Index = () => {
     }]);
 
     try {
-      const response = await fetch('http://localhost:8000/chat-stream', {
+      const response = await fetch(`${API_BASE_URL}/chat-stream`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
