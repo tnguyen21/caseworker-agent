@@ -52,7 +52,7 @@ llm = Gemini(
 
 # build index
 documents = SimpleDirectoryReader(
-    "../Section8-Resources"
+    "/app/Section8-Resources"
 ).load_data()
 index = VectorStoreIndex.from_documents(documents)
 
