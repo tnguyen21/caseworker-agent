@@ -13,7 +13,7 @@ logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(
 logger = logging.getLogger(__name__)
 
 # Load system prompt
-with open('prompts/section8_agent.yaml', 'r') as f:
+with open('/app/prompts/section8_agent.yaml', 'r') as f:
     prompt_config = yaml.safe_load(f)
     SYSTEM_PROMPT = prompt_config['system_prompt']
 
