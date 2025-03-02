@@ -9,7 +9,7 @@ const FAQ = () => {
       <main className="pt-24 pb-16 px-4">
         <div className="max-w-4xl mx-auto">
           <div className="mb-8 flex items-center justify-between">
-            <h1 className="text-3xl font-bold">Frequently Asked Questions</h1>
+            <h1 className="text-3xl font-bold">About Page</h1>
             <Link 
               to="/" 
               className="px-4 py-2 rounded-md bg-primary text-white hover:bg-primary/90 transition-colors"
@@ -19,13 +19,40 @@ const FAQ = () => {
           </div>
           
           <div className="space-y-10">
+            <h2></h2>
+            <div className="space-y-4">
+                <div>
+                  <h3 className="text-lg font-medium text-primary">Purpose: Empowering Families to Better Futures</h3>
+                  <p className="mt-1 text-muted-foreground">
+                  Studies have found that Housing Choice vouchers boost children's chances of breaking out of poverty as adults by 50%.
+                  However, due to a lack of awareness of the benefits, and lack of support in resettling into a new environment, families are not using the vouchers. 
+                  </p>
+                </div>
+              </div>
+          </div>
+
+          <div className="space-y-10">
+            <h2></h2>
+            <div className="space-y-4">
+                <div>
+                  <h3 className="text-lg font-medium text-primary">What can the Housing Hub Assistant help me with?</h3>
+                  <p className="mt-1 text-muted-foreground">
+                    The Housing Hub Assistant can help caseworkers find information about available services, 
+                    eligibility requirements, documentation needs, and procedural guidance. It can also 
+                    help with form completion and case management questions.
+                  </p>
+                </div>
+              </div>
+          </div>
+
+          <div className="space-y-10">
             {/* Using System */}
             <section className="space-y-4">
-              <h2 className="text-2xl font-semibold border-b pb-2">Using the Chat Assistant</h2>
+              <h2 className="text-2xl font-semibold border-b pb-2">Using the Housing Hub Assistant</h2>
               
               <div className="space-y-4">
                 <div>
-                  <h3 className="text-lg font-medium text-primary">What can the Chat Assistant help me with?</h3>
+                  <h3 className="text-lg font-medium text-primary">What can the Housing Hub Assistant help me with?</h3>
                   <p className="mt-1 text-muted-foreground">
                     The Chat Assistant can help caseworkers find information about available services, 
                     eligibility requirements, documentation needs, and procedural guidance. It can also 
